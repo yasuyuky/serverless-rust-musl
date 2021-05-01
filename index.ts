@@ -8,10 +8,10 @@ class RustMusl implements Plugin {
   hooks: Plugin.Hooks;
   commands: Plugin.Commands;
 
-  defaultDependencies: [string, string[]][] = [
-    ["lambda_runtime", []],
-    ["tokio", ["full"]],
-    ["openssl", ["vendored"]],
+  defaultDependencies: { name: string; features: string[] }[] = [
+    { name: "lambda_runtime", features: [] },
+    { name: "tokio", features: ["full"] },
+    { name: "openssl", features: ["vendored"] },
   ];
 
   constructor(serverless: Serverless, options: Serverless.Options) {
@@ -44,8 +44,8 @@ class RustMusl implements Plugin {
   addDependencies() {
     for (let dep of this.defaultDependencies) {
       console.log(dep);
-      let args = ["add", dep[0]].concat(
-        dep[1].length ? ["--features"].concat(dep[1]) : []
+      let args = ["add", dep.name].concat(
+        dep.features.length ? ["--features"].concat(dep.features) : []
       );
       spawnSync("cargo", args);
     }

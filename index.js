@@ -4,9 +4,9 @@ var child_process_1 = require("child_process");
 var RustMusl = /** @class */ (function () {
     function RustMusl(serverless, options) {
         this.defaultDependencies = [
-            ["lambda_runtime", []],
-            ["tokio", ["full"]],
-            ["openssl", ["vendored"]],
+            { name: "lambda_runtime", features: [] },
+            { name: "tokio", features: ["full"] },
+            { name: "openssl", features: ["vendored"] },
         ];
         this.serverless = serverless;
         this.options = options;
@@ -36,7 +36,7 @@ var RustMusl = /** @class */ (function () {
         for (var _i = 0, _a = this.defaultDependencies; _i < _a.length; _i++) {
             var dep = _a[_i];
             console.log(dep);
-            var args = ["add", dep[0]].concat(dep[1].length ? ["--features"].concat(dep[1]) : []);
+            var args = ["add", dep.name].concat(dep.features.length ? ["--features"].concat(dep.features) : []);
             child_process_1.spawnSync("cargo", args);
         }
     };

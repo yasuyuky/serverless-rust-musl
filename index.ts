@@ -43,7 +43,7 @@ class RustMusl implements Plugin {
 
   addDependencies() {
     for (let dep of this.defaultDependencies) {
-      console.log(dep);
+      console.log("Add cargo dependency:", dep);
       let args = ["add", dep.name].concat(
         dep.features.length ? ["--features"].concat(dep.features) : []
       );

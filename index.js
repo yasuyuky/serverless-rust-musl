@@ -35,7 +35,7 @@ var RustMusl = /** @class */ (function () {
     RustMusl.prototype.addDependencies = function () {
         for (var _i = 0, _a = this.defaultDependencies; _i < _a.length; _i++) {
             var dep = _a[_i];
-            console.log(dep);
+            console.log("Add cargo dependency:", dep);
             var args = ["add", dep.name].concat(dep.features.length ? ["--features"].concat(dep.features) : []);
             child_process_1.spawnSync("cargo", args);
         }

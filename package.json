@@ -1,0 +1,30 @@
+{
+  "name": "serverless-rust-musl",
+  "version": "0.1.0",
+  "description": "Serverless framework plugin for rustlang applications with musl",
+  "author": "yasuyuky <yasuyuki.ymd@gmail.com>",
+  "main": "index.js",
+  "scripts": {
+    "lint": "npx prettier --check '**.ts' '!coverage' ",
+    "test": "echo 'no test exists' && return 1",
+    "fmt": "npx prettier --write '**.ts' '!coverage' "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yasuyuky/serverless-rust-musl.git"
+  },
+  "keywords": [
+    "rustlang",
+    "aws",
+    "serverless",
+    "lambda"
+  ],
+  "devDependencies": {
+    "@types/node": "^15.0.1",
+    "@types/serverless": "^1.78.26",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "serverless": "^2.39.0"
+  }
+}

@@ -1,7 +1,7 @@
 import Serverless from "serverless";
 import Plugin from "serverless/classes/Plugin";
 import { spawnSync } from "child_process";
-import { mkdirSync, createWriteStream } from "fs";
+import * as fs from "fs";
 
 class RustMusl implements Plugin {
   serverless: Serverless;
@@ -44,8 +44,8 @@ class RustMusl implements Plugin {
   init() {
     if (!this.check()) return;
     spawnSync("cargo", ["init"]);
-    mkdirSync(".cargo");
-    let fd = createWriteStream(".cargo/config");
+    fs.mkdirSync(".cargo");
+    let fd = fs.createWriteStream(".cargo/config");
     fd.write(
       '[target.x86_64-unknown-linux-musl]\nlinker = "x86_64-linux-musl-gcc"'
     );

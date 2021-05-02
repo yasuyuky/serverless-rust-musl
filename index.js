@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var child_process_1 = require("child_process");
+var fs_1 = require("fs");
 var RustMusl = /** @class */ (function () {
     function RustMusl(serverless, options) {
         this.defaultDependencies = [
@@ -14,7 +15,9 @@ var RustMusl = /** @class */ (function () {
             cargoinit: {
                 lifecycleEvents: ["init", "addDependencies"],
             },
-            build: { lifecycleEvents: ["build"] },
+            build: {
+                lifecycleEvents: ["build"],
+            },
         };
         this.hooks = {
             "cargoinit:init": this.init.bind(this),
@@ -33,6 +36,9 @@ var RustMusl = /** @class */ (function () {
         if (!this.check())
             return;
         child_process_1.spawnSync("cargo", ["init"]);
+        fs_1.mkdirSync(".cargo");
+        var fd = fs_1.createWriteStream(".cargo/config");
+        fd.write('[target.x86_64-unknown-linux-musl]\nlinker = "x86_64-linux-musl-gcc"');
     };
     RustMusl.prototype.addDependencies = function () {
         for (var _i = 0, _a = this.defaultDependencies; _i < _a.length; _i++) {

@@ -44,7 +44,7 @@ class RustMusl implements Plugin {
   init() {
     if (!this.check()) return;
     spawnSync("cargo", ["init"]);
-    fs.mkdirSync(".cargo");
+    if (!fs.existsSync(".cargo")) fs.mkdirSync(".cargo");
     let fd = fs.createWriteStream(".cargo/config");
     fd.write(
       '[target.x86_64-unknown-linux-musl]\nlinker = "x86_64-linux-musl-gcc"'

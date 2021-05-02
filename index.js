@@ -55,7 +55,8 @@ var RustMusl = /** @class */ (function () {
         if (!this.check())
             return;
         child_process_1.spawnSync("cargo", ["init"]);
-        fs.mkdirSync(".cargo");
+        if (!fs.existsSync(".cargo"))
+            fs.mkdirSync(".cargo");
         var fd = fs.createWriteStream(".cargo/config");
         fd.write('[target.x86_64-unknown-linux-musl]\nlinker = "x86_64-linux-musl-gcc"');
     };

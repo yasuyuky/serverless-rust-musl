@@ -22,11 +22,15 @@ class RustMusl implements Plugin {
       cargoinit: {
         lifecycleEvents: ["init", "addDependencies"],
       },
+      build: {
+        lifecycleEvents: ["build"],
+      },
     };
 
     this.hooks = {
       "cargoinit:init": this.init.bind(this),
       "cargoinit:addDependencies": this.addDependencies.bind(this),
+      "build:build": this.build.bind(this),
     };
   }
 
@@ -49,6 +53,11 @@ class RustMusl implements Plugin {
       );
       spawnSync("cargo", args);
     }
+  }
+
+  build() {
+    if (!this.check()) return;
+    spawnSync("cargo", ["build", "--target", "x86_64-unknown-linux-musl"]);
   }
 }
 

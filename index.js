@@ -14,10 +14,12 @@ var RustMusl = /** @class */ (function () {
             cargoinit: {
                 lifecycleEvents: ["init", "addDependencies"],
             },
+            build: { lifecycleEvents: ["build"] },
         };
         this.hooks = {
             "cargoinit:init": this.init.bind(this),
             "cargoinit:addDependencies": this.addDependencies.bind(this),
+            "build:build": this.build.bind(this),
         };
     }
     RustMusl.prototype.check = function () {
@@ -39,6 +41,11 @@ var RustMusl = /** @class */ (function () {
             var args = ["add", dep.name].concat(dep.features.length ? ["--features"].concat(dep.features) : []);
             child_process_1.spawnSync("cargo", args);
         }
+    };
+    RustMusl.prototype.build = function () {
+        if (!this.check())
+            return;
+        child_process_1.spawnSync("cargo", ["build", "--target", "x86_64-unknown-linux-musl"]);
     };
     return RustMusl;
 }());

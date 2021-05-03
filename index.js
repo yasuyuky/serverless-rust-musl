@@ -21,6 +21,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var child_process_1 = require("child_process");
 var fs = __importStar(require("fs"));
+var toml = __importStar(require("toml"));
 var RustMusl = /** @class */ (function () {
     function RustMusl(serverless, options) {
         this.defaultDependencies = [
@@ -67,6 +68,26 @@ var RustMusl = /** @class */ (function () {
             var args = ["add", dep.name].concat(dep.features.length ? ["--features"].concat(dep.features) : []);
             child_process_1.spawnSync("cargo", args);
         }
+    };
+    RustMusl.prototype.loadFunctions = function () {
+        var buf = fs.readFileSync("Cargo.toml");
+        var cargotoml = toml.parse(buf.toString());
+        cargotoml.bin = [];
+        var isHandler = function (f) {
+            return true;
+        };
+        for (var _i = 0, _a = this.serverless.service.getAllFunctions(); _i < _a.length; _i++) {
+            var fname = _a[_i];
+            var func = this.serverless.service.getFunction(fname);
+            if (isHandler(func)) {
+                var handlerName = func.handler.split(".")[1];
+                cargotoml.bin.push({
+                    name: handlerName,
+                    src: "src/" + handlerName + ".rs",
+                });
+            }
+        }
+        console.log(cargotoml);
     };
     RustMusl.prototype.build = function () {
         if (!this.check())

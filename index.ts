@@ -2,6 +2,7 @@ import Serverless from "serverless";
 import Plugin from "serverless/classes/Plugin";
 import { spawnSync } from "child_process";
 import * as fs from "fs";
+import * as toml from "toml";
 
 class RustMusl implements Plugin {
   serverless: Serverless;
@@ -59,6 +60,26 @@ class RustMusl implements Plugin {
       );
       spawnSync("cargo", args);
     }
+  }
+
+  loadFunctions() {
+    let buf = fs.readFileSync("Cargo.toml");
+    let cargotoml = toml.parse(buf.toString());
+    cargotoml.bin = [];
+    const isHandler = (f: any): f is Serverless.FunctionDefinitionHandler => {
+      return true;
+    };
+    for (let fname of this.serverless.service.getAllFunctions()) {
+      let func = this.serverless.service.getFunction(fname);
+      if (isHandler(func)) {
+        let handlerName = func.handler.split(".")[1];
+        cargotoml.bin.push({
+          name: handlerName,
+          src: `src/${handlerName}.rs`,
+        });
+      }
+    }
+    console.log(cargotoml);
   }
 
   build() {

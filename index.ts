@@ -63,9 +63,8 @@ class RustMusl implements Plugin {
   }
 
   loadFunctionsToCargo() {
-    let buf = fs.readFileSync("Cargo.toml");
-    let cargotoml = toml.parse(buf.toString());
-    cargotoml.bin = [];
+    let cargo = toml.parse(fs.readFileSync("Cargo.toml").toString());
+    cargo.bin = [];
     const isHandler = (f: any): f is Serverless.FunctionDefinitionHandler => {
       return true;
     };
@@ -73,13 +72,13 @@ class RustMusl implements Plugin {
       let func = this.serverless.service.getFunction(fname);
       if (isHandler(func)) {
         let handlerName = func.handler.split(".")[1];
-        cargotoml.bin.push({
+        cargo.bin.push({
           name: handlerName,
           src: `src/${handlerName}.rs`,
         });
       }
     }
-    return cargotoml;
+    return cargo;
   }
 
   build() {

@@ -70,9 +70,8 @@ var RustMusl = /** @class */ (function () {
         }
     };
     RustMusl.prototype.loadFunctionsToCargo = function () {
-        var buf = fs.readFileSync("Cargo.toml");
-        var cargotoml = toml.parse(buf.toString());
-        cargotoml.bin = [];
+        var cargo = toml.parse(fs.readFileSync("Cargo.toml").toString());
+        cargo.bin = [];
         var isHandler = function (f) {
             return true;
         };
@@ -81,13 +80,13 @@ var RustMusl = /** @class */ (function () {
             var func = this.serverless.service.getFunction(fname);
             if (isHandler(func)) {
                 var handlerName = func.handler.split(".")[1];
-                cargotoml.bin.push({
+                cargo.bin.push({
                     name: handlerName,
                     src: "src/" + handlerName + ".rs",
                 });
             }
         }
-        return cargotoml;
+        return cargo;
     };
     RustMusl.prototype.build = function () {
         if (!this.check())

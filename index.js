@@ -28,6 +28,7 @@ var RustMusl = /** @class */ (function () {
             { name: "lambda_runtime", features: [] },
             { name: "tokio", features: ["full"] },
             { name: "openssl", features: ["vendored"] },
+            { name: "serde_json", features: [] },
         ];
         this.defaultMain = "\nuse lambda_runtime::{handler_fn, Context};\nuse serde_json::Value;\n\ntype Error = Box<dyn std::error::Error + Sync + Send + 'static>;\n\n#[tokio::main]\nasync fn main() -> Result<(), Error> {\n    lambda_runtime::run(handler_fn(handler)).await?;\n    Ok(())\n}\n\nasync fn handler(event: Value, _: Context) -> Result<Value, Error> {\n    Ok(event)\n}";
         this.serverless = serverless;

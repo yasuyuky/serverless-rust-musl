@@ -14,6 +14,7 @@ class RustMusl implements Plugin {
     { name: "lambda_runtime", features: [] },
     { name: "tokio", features: ["full"] },
     { name: "openssl", features: ["vendored"] },
+    { name: "serde_json", features: [] },
   ];
 
   defaultMain: string = `

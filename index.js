@@ -33,7 +33,7 @@ var RustMusl = /** @class */ (function () {
         this.options = options;
         this.commands = {
             cargoinit: {
-                lifecycleEvents: ["init", "addDependencies"],
+                lifecycleEvents: ["init", "addDependencies", "modifyCargo"],
             },
             build: {
                 lifecycleEvents: ["build"],
@@ -42,6 +42,7 @@ var RustMusl = /** @class */ (function () {
         this.hooks = {
             "cargoinit:init": this.init.bind(this),
             "cargoinit:addDependencies": this.addDependencies.bind(this),
+            "cargoinit:modifyCargo": this.modifyCargo.bind(this),
             "build:build": this.build.bind(this),
         };
     }
@@ -60,6 +61,11 @@ var RustMusl = /** @class */ (function () {
             fs.mkdirSync(".cargo");
         var fd = fs.createWriteStream(".cargo/config");
         fd.write('[target.x86_64-unknown-linux-musl]\nlinker = "x86_64-linux-musl-gcc"');
+    };
+    RustMusl.prototype.modifyCargo = function () {
+        var cargo = this.loadFunctionsToCargo();
+        var toml = this.createCargoToml(cargo);
+        fs.writeFileSync("Cargo.toml", toml);
     };
     RustMusl.prototype.addDependencies = function () {
         for (var _i = 0, _a = this.defaultDependencies; _i < _a.length; _i++) {
@@ -105,21 +111,21 @@ var RustMusl = /** @class */ (function () {
         }
         buf += "\n";
         for (var _i = 0, _a = cargo.bin; _i < _a.length; _i++) {
-                    var obj = _a[_i];
+            var obj = _a[_i];
             buf += "[[bin]]\n";
-                    for (var k in obj) {
-                        buf += [k, "=", JSON.stringify(obj[k]), "\n"].join(" ");
-                    }
+            for (var k in obj) {
+                buf += [k, "=", JSON.stringify(obj[k]), "\n"].join(" ");
+            }
             buf += "\n";
-                }
+        }
         buf += "[dependencies]\n";
         for (var k in cargo.dependencies) {
             var v = typeof cargo.dependencies[k] == "object"
                 ? this.makeInlineObject(cargo.dependencies[k])
                 : "\"" + cargo.dependencies[k] + "\"";
             buf += [k, "=", v, "\n"].join(" ");
-            }
-            buf += "\n";
+        }
+        buf += "\n";
         return buf;
     };
     RustMusl.prototype.build = function () {

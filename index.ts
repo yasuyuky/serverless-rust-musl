@@ -22,7 +22,7 @@ class RustMusl implements Plugin {
 
     this.commands = {
       cargoinit: {
-        lifecycleEvents: ["init", "addDependencies"],
+        lifecycleEvents: ["init", "addDependencies", "modifyCargo"],
       },
       build: {
         lifecycleEvents: ["build"],
@@ -32,6 +32,7 @@ class RustMusl implements Plugin {
     this.hooks = {
       "cargoinit:init": this.init.bind(this),
       "cargoinit:addDependencies": this.addDependencies.bind(this),
+      "cargoinit:modifyCargo": this.modifyCargo.bind(this),
       "build:build": this.build.bind(this),
     };
   }
@@ -50,6 +51,12 @@ class RustMusl implements Plugin {
     fd.write(
       '[target.x86_64-unknown-linux-musl]\nlinker = "x86_64-linux-musl-gcc"'
     );
+  }
+
+  modifyCargo() {
+    let cargo = this.loadFunctionsToCargo();
+    let toml = this.createCargoToml(cargo);
+    fs.writeFileSync("Cargo.toml", toml);
   }
 
   addDependencies() {

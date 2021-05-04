@@ -81,7 +81,7 @@ class RustMusl implements Plugin {
         let handlerName = func.handler.split(".")[1];
         cargo.bin.push({
           name: handlerName,
-          src: `src/${handlerName}.rs`,
+          path: `src/${handlerName}.rs`,
         });
       }
     }

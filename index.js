@@ -88,7 +88,7 @@ var RustMusl = /** @class */ (function () {
                 var handlerName = func.handler.split(".")[1];
                 cargo.bin.push({
                     name: handlerName,
-                    src: "src/" + handlerName + ".rs",
+                    path: "src/" + handlerName + ".rs",
                 });
             }
         }

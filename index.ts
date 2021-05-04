@@ -16,6 +16,22 @@ class RustMusl implements Plugin {
     { name: "openssl", features: ["vendored"] },
   ];
 
+  defaultMain: string = `
+use lambda_runtime::{handler_fn, Context};
+use serde_json::Value;
+
+type Error = Box<dyn std::error::Error + Sync + Send + 'static>;
+
+#[tokio::main]
+async fn main() -> Result<(), Error> {
+    lambda_runtime::run(handler_fn(handler)).await?;
+    Ok(())
+}
+
+async fn handler(event: Value, _: Context) -> Result<Value, Error> {
+    Ok(event)
+}`;
+
   constructor(serverless: Serverless, options: Serverless.Options) {
     this.serverless = serverless;
     this.options = options;
@@ -112,6 +128,7 @@ class RustMusl implements Plugin {
         buf += [k, "=", JSON.stringify(obj[k]), "\n"].join(" ");
       }
       buf += "\n";
+      fs.writeFileSync(obj.path, this.defaultMain);
     }
 
     buf += `[dependencies]\n`;

@@ -81,6 +81,16 @@ class RustMusl implements Plugin {
     return cargo;
   }
 
+  makeInlineObject(obj: any) {
+    let elements = [];
+    for (let k in obj) {
+      let v = JSON.stringify(obj[k]);
+      elements.push(`${k} = ${v}`);
+    }
+    let buf = `{ ${elements.join(", ")} }`;
+    return buf;
+  }
+
   createCargoToml(cargo: any) {
     let buf = "";
     buf += `[package]\n`;
@@ -99,7 +109,11 @@ class RustMusl implements Plugin {
 
     buf += `[dependencies]\n`;
     for (let k in cargo.dependencies) {
-      buf += [k, "=", JSON.stringify(cargo.dependencies[k]), "\n"].join(" ");
+      let v =
+        typeof cargo.dependencies[k] == "object"
+          ? this.makeInlineObject(cargo.dependencies[k])
+          : `"${cargo.dependencies[k]}"`;
+      buf += [k, "=", v, "\n"].join(" ");
     }
     buf += "\n";
     return buf;

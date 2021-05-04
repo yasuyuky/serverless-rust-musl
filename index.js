@@ -88,6 +88,15 @@ var RustMusl = /** @class */ (function () {
         }
         return cargo;
     };
+    RustMusl.prototype.makeInlineObject = function (obj) {
+        var elements = [];
+        for (var k in obj) {
+            var v = JSON.stringify(obj[k]);
+            elements.push(k + " = " + v);
+        }
+        var buf = "{ " + elements.join(", ") + " }";
+        return buf;
+    };
     RustMusl.prototype.createCargoToml = function (cargo) {
         var buf = "";
         buf += "[package]\n";
@@ -105,7 +114,10 @@ var RustMusl = /** @class */ (function () {
                 }
         buf += "[dependencies]\n";
         for (var k in cargo.dependencies) {
-            buf += [k, "=", JSON.stringify(cargo.dependencies[k]), "\n"].join(" ");
+            var v = typeof cargo.dependencies[k] == "object"
+                ? this.makeInlineObject(cargo.dependencies[k])
+                : "\"" + cargo.dependencies[k] + "\"";
+            buf += [k, "=", v, "\n"].join(" ");
             }
             buf += "\n";
         return buf;

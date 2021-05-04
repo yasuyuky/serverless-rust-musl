@@ -69,7 +69,7 @@ var RustMusl = /** @class */ (function () {
             child_process_1.spawnSync("cargo", args);
         }
     };
-    RustMusl.prototype.loadFunctions = function () {
+    RustMusl.prototype.loadFunctionsToCargo = function () {
         var buf = fs.readFileSync("Cargo.toml");
         var cargotoml = toml.parse(buf.toString());
         cargotoml.bin = [];
@@ -87,7 +87,7 @@ var RustMusl = /** @class */ (function () {
                 });
             }
         }
-        console.log(cargotoml);
+        return cargotoml;
     };
     RustMusl.prototype.build = function () {
         if (!this.check())

@@ -62,7 +62,7 @@ class RustMusl implements Plugin {
     }
   }
 
-  loadFunctions() {
+  loadFunctionsToCargo() {
     let buf = fs.readFileSync("Cargo.toml");
     let cargotoml = toml.parse(buf.toString());
     cargotoml.bin = [];
@@ -79,7 +79,7 @@ class RustMusl implements Plugin {
         });
       }
     }
-    console.log(cargotoml);
+    return cargotoml;
   }
 
   build() {

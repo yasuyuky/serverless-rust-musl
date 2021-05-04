@@ -90,24 +90,24 @@ var RustMusl = /** @class */ (function () {
     };
     RustMusl.prototype.createCargoToml = function (cargo) {
         var buf = "";
-        for (var section in cargo) {
-            if (cargo[section] instanceof Array) {
-                for (var _i = 0, _a = cargo[section]; _i < _a.length; _i++) {
+        buf += "[package]\n";
+        for (var k in cargo.package) {
+            buf += [k, "=", JSON.stringify(cargo.package[k]), "\n"].join(" ");
+        }
+        buf += "\n";
+        for (var _i = 0, _a = cargo.bin; _i < _a.length; _i++) {
                     var obj = _a[_i];
-                    buf += "[[" + section + "]]\n";
+            buf += "[[bin]]\n";
                     for (var k in obj) {
                         buf += [k, "=", JSON.stringify(obj[k]), "\n"].join(" ");
                     }
+            buf += "\n";
                 }
-            }
-            else {
-                buf += "[" + section + "]\n";
-                for (var k in cargo[section]) {
-                    buf += [k, "=", JSON.stringify(cargo[section][k]), "\n"].join(" ");
-                }
+        buf += "[dependencies]\n";
+        for (var k in cargo.dependencies) {
+            buf += [k, "=", JSON.stringify(cargo.dependencies[k]), "\n"].join(" ");
             }
             buf += "\n";
-        }
         return buf;
     };
     RustMusl.prototype.build = function () {

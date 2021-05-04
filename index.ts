@@ -83,22 +83,25 @@ class RustMusl implements Plugin {
 
   createCargoToml(cargo: any) {
     let buf = "";
-    for (let section in cargo) {
-      if (cargo[section] instanceof Array) {
-        for (let obj of cargo[section]) {
-          buf += `[[${section}]]\n`;
-          for (let k in obj) {
-            buf += [k, "=", JSON.stringify(obj[k]), "\n"].join(" ");
-          }
-        }
-      } else {
-        buf += `[${section}]\n`;
-        for (let k in cargo[section]) {
-          buf += [k, "=", JSON.stringify(cargo[section][k]), "\n"].join(" ");
-        }
+    buf += `[package]\n`;
+    for (let k in cargo.package) {
+      buf += [k, "=", JSON.stringify(cargo.package[k]), "\n"].join(" ");
+    }
+    buf += "\n";
+
+    for (let obj of cargo.bin) {
+      buf += `[[bin]]\n`;
+      for (let k in obj) {
+        buf += [k, "=", JSON.stringify(obj[k]), "\n"].join(" ");
       }
       buf += "\n";
     }
+
+    buf += `[dependencies]\n`;
+    for (let k in cargo.dependencies) {
+      buf += [k, "=", JSON.stringify(cargo.dependencies[k]), "\n"].join(" ");
+    }
+    buf += "\n";
     return buf;
   }
 

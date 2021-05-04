@@ -81,6 +81,27 @@ class RustMusl implements Plugin {
     return cargo;
   }
 
+  createCargoToml(cargo: any) {
+    let buf = "";
+    for (let section in cargo) {
+      if (cargo[section] instanceof Array) {
+        for (let obj of cargo[section]) {
+          buf += `[[${section}]]\n`;
+          for (let k in obj) {
+            buf += [k, "=", JSON.stringify(obj[k]), "\n"].join(" ");
+          }
+        }
+      } else {
+        buf += `[${section}]\n`;
+        for (let k in cargo[section]) {
+          buf += [k, "=", JSON.stringify(cargo[section][k]), "\n"].join(" ");
+        }
+      }
+      buf += "\n";
+    }
+    return buf;
+  }
+
   build() {
     if (!this.check()) return;
     spawnSync("cargo", ["build", "--target", "x86_64-unknown-linux-musl"]);

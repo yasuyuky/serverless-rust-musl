@@ -20,6 +20,7 @@
     "lambda"
   ],
   "devDependencies": {
+    "@types/adm-zip": "^0.4.34",
     "@types/node": "^15.0.1",
     "@types/serverless": "^1.78.26",
     "typescript": "^4.2.4"

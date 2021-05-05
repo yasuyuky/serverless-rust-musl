@@ -3,6 +3,7 @@ import Plugin from "serverless/classes/Plugin";
 import { spawnSync } from "child_process";
 import * as fs from "fs";
 import * as toml from "toml";
+import * as process from "process";
 
 class RustMusl implements Plugin {
   serverless: Serverless;
@@ -146,7 +147,14 @@ async fn handler(event: Value, _: Context) -> Result<Value, Error> {
 
   build() {
     if (!this.check()) return;
-    spawnSync("cargo", ["build", "--target", "x86_64-unknown-linux-musl"]);
+    let env = process.env;
+    env.TARGET_CC = "x86_64-linux-musl-gcc";
+    let ret = spawnSync(
+      "cargo",
+      ["build", "--target", "x86_64-unknown-linux-musl"],
+      { env }
+    );
+    console.log(ret);
   }
 }
 

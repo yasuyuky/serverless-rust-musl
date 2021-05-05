@@ -22,6 +22,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var child_process_1 = require("child_process");
 var fs = __importStar(require("fs"));
 var toml = __importStar(require("toml"));
+var process = __importStar(require("process"));
 var RustMusl = /** @class */ (function () {
     function RustMusl(serverless, options) {
         this.defaultDependencies = [
@@ -134,7 +135,10 @@ var RustMusl = /** @class */ (function () {
     RustMusl.prototype.build = function () {
         if (!this.check())
             return;
-        child_process_1.spawnSync("cargo", ["build", "--target", "x86_64-unknown-linux-musl"]);
+        var env = process.env;
+        env.TARGET_CC = "x86_64-linux-musl-gcc";
+        var ret = child_process_1.spawnSync("cargo", ["build", "--target", "x86_64-unknown-linux-musl"], { env: env });
+        console.log(ret);
     };
     return RustMusl;
 }());

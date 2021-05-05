@@ -151,7 +151,7 @@ async fn handler(event: Value, _: Context) -> Result<Value, Error> {
     env.TARGET_CC = "x86_64-linux-musl-gcc";
     let ret = spawnSync(
       "cargo",
-      ["build", "--target", "x86_64-unknown-linux-musl"],
+      ["build", "--target", "x86_64-unknown-linux-musl", "--release"],
       { env }
     );
     console.log(ret);

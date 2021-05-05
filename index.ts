@@ -154,7 +154,7 @@ async fn handler(event: Value, _: Context) -> Result<Value, Error> {
       ["build", "--target", "x86_64-unknown-linux-musl", "--release"],
       { env }
     );
-    console.log(ret);
+    console.log("status:", ret.status);
   }
 }
 

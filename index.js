@@ -138,7 +138,7 @@ var RustMusl = /** @class */ (function () {
         var env = process.env;
         env.TARGET_CC = "x86_64-linux-musl-gcc";
         var ret = child_process_1.spawnSync("cargo", ["build", "--target", "x86_64-unknown-linux-musl", "--release"], { env: env });
-        console.log(ret);
+        console.log("status:", ret.status);
     };
     return RustMusl;
 }());

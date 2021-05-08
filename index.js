@@ -25,6 +25,7 @@ var toml = __importStar(require("toml"));
 var process = __importStar(require("process"));
 var RustMusl = /** @class */ (function () {
     function RustMusl(serverless, options) {
+        this.target = "x86_64-unknown-linux-musl";
         this.defaultDependencies = [
             { name: "lambda_runtime", features: [] },
             { name: "tokio", features: ["full"] },
@@ -137,7 +138,7 @@ var RustMusl = /** @class */ (function () {
             return;
         var env = process.env;
         env.TARGET_CC = "x86_64-linux-musl-gcc";
-        var ret = child_process_1.spawnSync("cargo", ["build", "--target", "x86_64-unknown-linux-musl", "--release"], { env: env });
+        var ret = child_process_1.spawnSync("cargo", ["build", "--target", this.target, "--release"], { env: env });
         console.log("status:", ret.status);
     };
     return RustMusl;

@@ -37,7 +37,7 @@ var RustMusl = /** @class */ (function () {
         this.options = options;
         this.commands = {
             cargoinit: {
-                lifecycleEvents: ["init", "addDependencies", "modifyCargo"],
+                lifecycleEvents: ["init"],
             },
             build: {
                 lifecycleEvents: ["build"],
@@ -45,8 +45,6 @@ var RustMusl = /** @class */ (function () {
         };
         this.hooks = {
             "cargoinit:init": this.init.bind(this),
-            "cargoinit:addDependencies": this.addDependencies.bind(this),
-            "cargoinit:modifyCargo": this.modifyCargo.bind(this),
             "build:build": this.build.bind(this),
         };
     }
@@ -65,6 +63,8 @@ var RustMusl = /** @class */ (function () {
             fs.mkdirSync(".cargo");
         var fd = fs.createWriteStream(".cargo/config");
         fd.write('[target.x86_64-unknown-linux-musl]\nlinker = "x86_64-linux-musl-gcc"');
+        this.addDependencies();
+        this.modifyCargo();
     };
     RustMusl.prototype.modifyCargo = function () {
         var cargo = this.loadFunctionsToCargo();

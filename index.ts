@@ -10,6 +10,7 @@ class RustMusl implements Plugin {
   options: Serverless.Options;
   hooks: Plugin.Hooks;
   commands: Plugin.Commands;
+  target: string = "x86_64-unknown-linux-musl";
 
   defaultDependencies: { name: string; features: string[] }[] = [
     { name: "lambda_runtime", features: [] },

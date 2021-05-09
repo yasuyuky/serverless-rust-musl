@@ -97,17 +97,13 @@ var RustMusl = /** @class */ (function () {
     };
     RustMusl.prototype.init = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var fd;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         if (!this.check())
                             return [2 /*return*/];
                         child_process_1.spawnSync("cargo", ["init"]);
-                        if (!fs.existsSync(".cargo"))
-                            fs.mkdirSync(".cargo");
-                        fd = fs.createWriteStream(".cargo/config");
-                        fd.write('[target.x86_64-unknown-linux-musl]\nlinker = "x86_64-linux-musl-gcc"');
+                        this.createCargoConfig();
                         return [4 /*yield*/, this.modifyCargo()];
                     case 1:
                         _a.sent();
@@ -115,6 +111,12 @@ var RustMusl = /** @class */ (function () {
                 }
             });
         });
+    };
+    RustMusl.prototype.createCargoConfig = function () {
+        if (!fs.existsSync(".cargo"))
+            fs.mkdirSync(".cargo");
+        var fd = fs.createWriteStream(".cargo/config");
+        fd.write('[target.x86_64-unknown-linux-musl]\nlinker = "x86_64-linux-musl-gcc"');
     };
     RustMusl.prototype.modifyCargo = function () {
         return __awaiter(this, void 0, void 0, function () {

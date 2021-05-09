@@ -120,16 +120,17 @@ var RustMusl = /** @class */ (function () {
     };
     RustMusl.prototype.modifyCargo = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var cargo, toml;
+            var cargo, cargotoml;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        cargo = this.loadFunctionsToCargo();
+                        cargo = toml.parse(fs.readFileSync("Cargo.toml").toString());
+                        cargo = this.loadFunctionsToCargo(cargo);
                         return [4 /*yield*/, this.addDependencies(cargo)];
                     case 1:
                         cargo = _a.sent();
-                        toml = this.createCargoToml(cargo);
-                        fs.writeFileSync("Cargo.toml", toml);
+                        cargotoml = this.createCargoToml(cargo);
+                        fs.writeFileSync("Cargo.toml", cargotoml);
                         return [2 /*return*/];
                 }
             });
@@ -164,8 +165,7 @@ var RustMusl = /** @class */ (function () {
             });
         });
     };
-    RustMusl.prototype.loadFunctionsToCargo = function () {
-        var cargo = toml.parse(fs.readFileSync("Cargo.toml").toString());
+    RustMusl.prototype.loadFunctionsToCargo = function (cargo) {
         cargo.bin = [];
         var isHandler = function (f) {
             return true;

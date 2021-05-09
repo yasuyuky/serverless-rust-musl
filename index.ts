@@ -77,10 +77,11 @@ async fn handler(event: Value, _: Context) -> Result<Value, Error> {
   }
 
   async modifyCargo() {
-    let cargo = this.loadFunctionsToCargo();
+    let cargo = toml.parse(fs.readFileSync("Cargo.toml").toString());
+    cargo = this.loadFunctionsToCargo(cargo);
     cargo = await this.addDependencies(cargo);
-    let toml = this.createCargoToml(cargo);
-    fs.writeFileSync("Cargo.toml", toml);
+    let cargotoml = this.createCargoToml(cargo);
+    fs.writeFileSync("Cargo.toml", cargotoml);
   }
 
   async addDependencies(cargo: any) {
@@ -96,8 +97,7 @@ async fn handler(event: Value, _: Context) -> Result<Value, Error> {
     return cargo;
   }
 
-  loadFunctionsToCargo() {
-    let cargo = toml.parse(fs.readFileSync("Cargo.toml").toString());
+  loadFunctionsToCargo(cargo: any) {
     cargo.bin = [];
     const isHandler = (f: any): f is Serverless.FunctionDefinitionHandler => {
       return true;

@@ -60,7 +60,7 @@ async fn handler(event: Value, _: Context) -> Result<Value, Error> {
     return true;
   }
 
-  init() {
+  async init() {
     if (!this.check()) return;
     spawnSync("cargo", ["init"]);
     if (!fs.existsSync(".cargo")) fs.mkdirSync(".cargo");
@@ -68,17 +68,17 @@ async fn handler(event: Value, _: Context) -> Result<Value, Error> {
     fd.write(
       '[target.x86_64-unknown-linux-musl]\nlinker = "x86_64-linux-musl-gcc"'
     );
-    this.modifyCargo();
+    await this.modifyCargo();
   }
 
-  modifyCargo() {
-    this.addDependencies();
+  async modifyCargo() {
+    await this.addDependencies();
     let cargo = this.loadFunctionsToCargo();
     let toml = this.createCargoToml(cargo);
     fs.writeFileSync("Cargo.toml", toml);
   }
 
-  addDependencies() {
+  async addDependencies() {
     for (let dep of this.defaultDependencies) {
       console.log("Add cargo dependency:", dep);
       let args = ["add", dep.name].concat(

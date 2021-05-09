@@ -59,7 +59,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var child_process_1 = require("child_process");
-var fsp = __importStar(require("fs/promises"));
+var fs_1 = require("fs");
 var toml = __importStar(require("toml"));
 var process = __importStar(require("process"));
 var axios_1 = __importDefault(require("axios"));
@@ -119,15 +119,15 @@ var RustMusl = /** @class */ (function () {
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fsp.access(".cargo").catch(function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+                    case 0: return [4 /*yield*/, fs_1.promises.access(".cargo").catch(function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
                             switch (_a.label) {
-                                case 0: return [4 /*yield*/, fsp.mkdir(".cargo")];
+                                case 0: return [4 /*yield*/, fs_1.promises.mkdir(".cargo")];
                                 case 1: return [2 /*return*/, _a.sent()];
                             }
                         }); }); })];
                     case 1:
                         _a.sent();
-                        return [4 /*yield*/, fsp.writeFile(".cargo/config", '[target.x86_64-unknown-linux-musl]\nlinker = "x86_64-linux-musl-gcc"')];
+                        return [4 /*yield*/, fs_1.promises.writeFile(".cargo/config", '[target.x86_64-unknown-linux-musl]\nlinker = "x86_64-linux-musl-gcc"')];
                     case 2:
                         _a.sent();
                         return [2 /*return*/];
@@ -142,7 +142,7 @@ var RustMusl = /** @class */ (function () {
                 switch (_c.label) {
                     case 0:
                         _b = (_a = toml).parse;
-                        return [4 /*yield*/, fsp.readFile("Cargo.toml")];
+                        return [4 /*yield*/, fs_1.promises.readFile("Cargo.toml")];
                     case 1:
                         cargo = _b.apply(_a, [(_c.sent()).toString()]);
                         cargo = this.loadFunctions(cargo);
@@ -152,7 +152,7 @@ var RustMusl = /** @class */ (function () {
                         return [4 /*yield*/, this.createCargoToml(cargo)];
                     case 3:
                         cargotoml = _c.sent();
-                        return [4 /*yield*/, fsp.writeFile("Cargo.toml", cargotoml)];
+                        return [4 /*yield*/, fs_1.promises.writeFile("Cargo.toml", cargotoml)];
                     case 4:
                         _c.sent();
                         return [2 /*return*/];
@@ -238,7 +238,7 @@ var RustMusl = /** @class */ (function () {
                             buf += [k, "=", JSON.stringify(obj[k]), "\n"].join(" ");
                         }
                         buf += "\n";
-                        return [4 /*yield*/, fsp.writeFile(obj.path, this.defaultMain)];
+                        return [4 /*yield*/, fs_1.promises.writeFile(obj.path, this.defaultMain)];
                     case 2:
                         _b.sent();
                         _b.label = 3;

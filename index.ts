@@ -1,7 +1,7 @@
 import Serverless from "serverless";
 import Plugin from "serverless/classes/Plugin";
 import { spawnSync } from "child_process";
-import * as fsp from "fs/promises";
+import { promises as fs } from "fs";
 import * as toml from "toml";
 import * as process from "process";
 import axios from "axios";
@@ -69,19 +69,19 @@ async fn handler(event: Value, _: Context) -> Result<Value, Error> {
   }
 
   async createCargoConfig() {
-    await fsp.access(".cargo").catch(async () => await fsp.mkdir(".cargo"));
-    await fsp.writeFile(
+    await fs.access(".cargo").catch(async () => await fs.mkdir(".cargo"));
+    await fs.writeFile(
       ".cargo/config",
       '[target.x86_64-unknown-linux-musl]\nlinker = "x86_64-linux-musl-gcc"'
     );
   }
 
   async modifyCargo() {
-    let cargo = toml.parse((await fsp.readFile("Cargo.toml")).toString());
+    let cargo = toml.parse((await fs.readFile("Cargo.toml")).toString());
     cargo = this.loadFunctions(cargo);
     cargo = await this.addDependencies(cargo);
     let cargotoml = await this.createCargoToml(cargo);
-    await fsp.writeFile("Cargo.toml", cargotoml);
+    await fs.writeFile("Cargo.toml", cargotoml);
   }
 
   async addDependencies(cargo: any) {
@@ -139,7 +139,7 @@ async fn handler(event: Value, _: Context) -> Result<Value, Error> {
         buf += [k, "=", JSON.stringify(obj[k]), "\n"].join(" ");
       }
       buf += "\n";
-      await fsp.writeFile(obj.path, this.defaultMain);
+      await fs.writeFile(obj.path, this.defaultMain);
     }
 
     buf += `[dependencies]\n`;

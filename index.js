@@ -60,6 +60,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var child_process_1 = require("child_process");
 var fs = __importStar(require("fs"));
+var fsp = __importStar(require("fs/promises"));
 var toml = __importStar(require("toml"));
 var process = __importStar(require("process"));
 var axios_1 = __importDefault(require("axios"));
@@ -103,9 +104,11 @@ var RustMusl = /** @class */ (function () {
                         if (!this.check())
                             return [2 /*return*/];
                         child_process_1.spawnSync("cargo", ["init"]);
-                        this.createCargoConfig();
-                        return [4 /*yield*/, this.modifyCargo()];
+                        return [4 /*yield*/, this.createCargoConfig()];
                     case 1:
+                        _a.sent();
+                        return [4 /*yield*/, this.modifyCargo()];
+                    case 2:
                         _a.sent();
                         return [2 /*return*/];
                 }
@@ -113,24 +116,44 @@ var RustMusl = /** @class */ (function () {
         });
     };
     RustMusl.prototype.createCargoConfig = function () {
-        if (!fs.existsSync(".cargo"))
-            fs.mkdirSync(".cargo");
-        var fd = fs.createWriteStream(".cargo/config");
-        fd.write('[target.x86_64-unknown-linux-musl]\nlinker = "x86_64-linux-musl-gcc"');
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, fsp.access(".cargo").catch(function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0: return [4 /*yield*/, fsp.mkdir(".cargo")];
+                                case 1: return [2 /*return*/, _a.sent()];
+                            }
+                        }); }); })];
+                    case 1:
+                        _a.sent();
+                        return [4 /*yield*/, fsp.writeFile(".cargo/config", '[target.x86_64-unknown-linux-musl]\nlinker = "x86_64-linux-musl-gcc"')];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     RustMusl.prototype.modifyCargo = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var cargo, cargotoml;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var cargo, _a, _b, cargotoml;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
-                        cargo = toml.parse(fs.readFileSync("Cargo.toml").toString());
+                        _b = (_a = toml).parse;
+                        return [4 /*yield*/, fsp.readFile("Cargo.toml")];
+                    case 1:
+                        cargo = _b.apply(_a, [(_c.sent()).toString()]);
                         cargo = this.loadFunctions(cargo);
                         return [4 /*yield*/, this.addDependencies(cargo)];
-                    case 1:
-                        cargo = _a.sent();
+                    case 2:
+                        cargo = _c.sent();
                         cargotoml = this.createCargoToml(cargo);
-                        fs.writeFileSync("Cargo.toml", cargotoml);
+                        return [4 /*yield*/, fsp.writeFile("Cargo.toml", cargotoml)];
+                    case 3:
+                        _c.sent();
                         return [2 /*return*/];
                 }
             });

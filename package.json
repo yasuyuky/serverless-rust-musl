@@ -21,12 +21,14 @@
   ],
   "devDependencies": {
     "@types/adm-zip": "^0.4.34",
+    "@types/axios": "^0.14.0",
     "@types/node": "^15.0.1",
     "@types/serverless": "^1.78.26",
     "typescript": "^4.2.4"
   },
   "dependencies": {
     "adm-zip": "^0.5.5",
+    "axios": "^0.21.1",
     "serverless": "^2.39.0",
     "toml": "^3.0.0"
   }

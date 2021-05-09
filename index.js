@@ -59,7 +59,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var child_process_1 = require("child_process");
-var fs = __importStar(require("fs"));
 var fsp = __importStar(require("fs/promises"));
 var toml = __importStar(require("toml"));
 var process = __importStar(require("process"));
@@ -150,9 +149,11 @@ var RustMusl = /** @class */ (function () {
                         return [4 /*yield*/, this.addDependencies(cargo)];
                     case 2:
                         cargo = _c.sent();
-                        cargotoml = this.createCargoToml(cargo);
-                        return [4 /*yield*/, fsp.writeFile("Cargo.toml", cargotoml)];
+                        return [4 /*yield*/, this.createCargoToml(cargo)];
                     case 3:
+                        cargotoml = _c.sent();
+                        return [4 /*yield*/, fsp.writeFile("Cargo.toml", cargotoml)];
+                    case 4:
                         _c.sent();
                         return [2 /*return*/];
                 }
@@ -216,30 +217,47 @@ var RustMusl = /** @class */ (function () {
         return buf;
     };
     RustMusl.prototype.createCargoToml = function (cargo) {
-        var buf = "";
-        buf += "[package]\n";
-        for (var k in cargo.package) {
-            buf += [k, "=", JSON.stringify(cargo.package[k]), "\n"].join(" ");
-        }
-        buf += "\n";
-        for (var _i = 0, _a = cargo.bin; _i < _a.length; _i++) {
-            var obj = _a[_i];
-            buf += "[[bin]]\n";
-            for (var k in obj) {
-                buf += [k, "=", JSON.stringify(obj[k]), "\n"].join(" ");
-            }
-            buf += "\n";
-            fs.writeFileSync(obj.path, this.defaultMain);
-        }
-        buf += "[dependencies]\n";
-        for (var k in cargo.dependencies) {
-            var v = typeof cargo.dependencies[k] == "object"
-                ? this.makeInlineObject(cargo.dependencies[k])
-                : "\"" + cargo.dependencies[k] + "\"";
-            buf += [k, "=", v, "\n"].join(" ");
-        }
-        buf += "\n";
-        return buf;
+        return __awaiter(this, void 0, void 0, function () {
+            var buf, k, _i, _a, obj, k, k, v;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        buf = "";
+                        buf += "[package]\n";
+                        for (k in cargo.package) {
+                            buf += [k, "=", JSON.stringify(cargo.package[k]), "\n"].join(" ");
+                        }
+                        buf += "\n";
+                        _i = 0, _a = cargo.bin;
+                        _b.label = 1;
+                    case 1:
+                        if (!(_i < _a.length)) return [3 /*break*/, 4];
+                        obj = _a[_i];
+                        buf += "[[bin]]\n";
+                        for (k in obj) {
+                            buf += [k, "=", JSON.stringify(obj[k]), "\n"].join(" ");
+                        }
+                        buf += "\n";
+                        return [4 /*yield*/, fsp.writeFile(obj.path, this.defaultMain)];
+                    case 2:
+                        _b.sent();
+                        _b.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4:
+                        buf += "[dependencies]\n";
+                        for (k in cargo.dependencies) {
+                            v = typeof cargo.dependencies[k] == "object"
+                                ? this.makeInlineObject(cargo.dependencies[k])
+                                : "\"" + cargo.dependencies[k] + "\"";
+                            buf += [k, "=", v, "\n"].join(" ");
+                        }
+                        buf += "\n";
+                        return [2 /*return*/, buf];
+                }
+            });
+        });
     };
     RustMusl.prototype.build = function () {
         if (!this.check())

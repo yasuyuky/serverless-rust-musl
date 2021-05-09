@@ -1,7 +1,6 @@
 import Serverless from "serverless";
 import Plugin from "serverless/classes/Plugin";
 import { spawnSync } from "child_process";
-import * as fs from "fs";
 import * as fsp from "fs/promises";
 import * as toml from "toml";
 import * as process from "process";
@@ -81,7 +80,7 @@ async fn handler(event: Value, _: Context) -> Result<Value, Error> {
     let cargo = toml.parse((await fsp.readFile("Cargo.toml")).toString());
     cargo = this.loadFunctions(cargo);
     cargo = await this.addDependencies(cargo);
-    let cargotoml = this.createCargoToml(cargo);
+    let cargotoml = await this.createCargoToml(cargo);
     await fsp.writeFile("Cargo.toml", cargotoml);
   }
 
@@ -126,7 +125,7 @@ async fn handler(event: Value, _: Context) -> Result<Value, Error> {
     return buf;
   }
 
-  createCargoToml(cargo: any) {
+  async createCargoToml(cargo: any) {
     let buf = "";
     buf += `[package]\n`;
     for (let k in cargo.package) {
@@ -140,7 +139,7 @@ async fn handler(event: Value, _: Context) -> Result<Value, Error> {
         buf += [k, "=", JSON.stringify(obj[k]), "\n"].join(" ");
       }
       buf += "\n";
-      fs.writeFileSync(obj.path, this.defaultMain);
+      await fsp.writeFile(obj.path, this.defaultMain);
     }
 
     buf += `[dependencies]\n`;

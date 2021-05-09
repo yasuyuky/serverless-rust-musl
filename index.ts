@@ -68,11 +68,11 @@ async fn handler(event: Value, _: Context) -> Result<Value, Error> {
     fd.write(
       '[target.x86_64-unknown-linux-musl]\nlinker = "x86_64-linux-musl-gcc"'
     );
-    this.addDependencies();
     this.modifyCargo();
   }
 
   modifyCargo() {
+    this.addDependencies();
     let cargo = this.loadFunctionsToCargo();
     let toml = this.createCargoToml(cargo);
     fs.writeFileSync("Cargo.toml", toml);

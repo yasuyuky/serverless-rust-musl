@@ -63,10 +63,10 @@ var RustMusl = /** @class */ (function () {
             fs.mkdirSync(".cargo");
         var fd = fs.createWriteStream(".cargo/config");
         fd.write('[target.x86_64-unknown-linux-musl]\nlinker = "x86_64-linux-musl-gcc"');
-        this.addDependencies();
         this.modifyCargo();
     };
     RustMusl.prototype.modifyCargo = function () {
+        this.addDependencies();
         var cargo = this.loadFunctionsToCargo();
         var toml = this.createCargoToml(cargo);
         fs.writeFileSync("Cargo.toml", toml);

@@ -135,7 +135,7 @@ var RustMusl = /** @class */ (function () {
     };
     RustMusl.prototype.addDependencies = function (cargo) {
         return __awaiter(this, void 0, void 0, function () {
-            var _i, _a, dep, url, res;
+            var _i, _a, dep, url, res, version;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -144,12 +144,12 @@ var RustMusl = /** @class */ (function () {
                     case 1:
                         if (!(_i < _a.length)) return [3 /*break*/, 4];
                         dep = _a[_i];
-                        console.log("Add cargo dependency:", dep);
                         url = "https://crates.io/api/v1/crates/" + dep.name;
                         return [4 /*yield*/, axios_1.default.get(url)];
                     case 2:
                         res = _b.sent();
-                        console.log(url, res.data.versions[0].num);
+                        version = res.data.versions[0].num;
+                        console.log("Add cargo dependency:", dep, version);
                         cargo.dependencies[dep.name] = dep.features.length
                             ? {
                                 version: res.data.versions[0].num,

@@ -151,11 +151,8 @@ var RustMusl = /** @class */ (function () {
                         version = res.data.versions[0].num;
                         console.log("Add cargo dependency:", dep, version);
                         cargo.dependencies[dep.name] = dep.features.length
-                            ? {
-                                version: res.data.versions[0].num,
-                                features: dep.features,
-                            }
-                            : res.data.versions[0].num;
+                            ? { version: version, features: dep.features }
+                            : version;
                         _b.label = 3;
                     case 3:
                         _i++;

@@ -86,11 +86,8 @@ async fn handler(event: Value, _: Context) -> Result<Value, Error> {
       let version = res.data.versions[0].num;
       console.log("Add cargo dependency:", dep, version);
       cargo.dependencies[dep.name] = dep.features.length
-        ? {
-            version: res.data.versions[0].num,
-            features: dep.features,
-          }
-        : res.data.versions[0].num;
+        ? { version, features: dep.features }
+        : version;
     }
     return cargo;
   }

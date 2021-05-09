@@ -125,7 +125,7 @@ var RustMusl = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         cargo = toml.parse(fs.readFileSync("Cargo.toml").toString());
-                        cargo = this.loadFunctionsToCargo(cargo);
+                        cargo = this.loadFunctions(cargo);
                         return [4 /*yield*/, this.addDependencies(cargo)];
                     case 1:
                         cargo = _a.sent();
@@ -165,7 +165,7 @@ var RustMusl = /** @class */ (function () {
             });
         });
     };
-    RustMusl.prototype.loadFunctionsToCargo = function (cargo) {
+    RustMusl.prototype.loadFunctions = function (cargo) {
         cargo.bin = [];
         var isHandler = function (f) {
             return true;

@@ -4,6 +4,7 @@ import { spawnSync } from "child_process";
 import * as fs from "fs";
 import * as toml from "toml";
 import * as process from "process";
+import axios from "axios";
 
 class RustMusl implements Plugin {
   serverless: Serverless;
@@ -72,20 +73,26 @@ async fn handler(event: Value, _: Context) -> Result<Value, Error> {
   }
 
   async modifyCargo() {
-    await this.addDependencies();
     let cargo = this.loadFunctionsToCargo();
+    cargo = await this.addDependencies(cargo);
     let toml = this.createCargoToml(cargo);
     fs.writeFileSync("Cargo.toml", toml);
   }
 
-  async addDependencies() {
+  async addDependencies(cargo: any) {
     for (let dep of this.defaultDependencies) {
       console.log("Add cargo dependency:", dep);
-      let args = ["add", dep.name].concat(
-        dep.features.length ? ["--features"].concat(dep.features) : []
-      );
-      spawnSync("cargo", args);
+      let url = `https://crates.io/api/v1/crates/${dep.name}`;
+      let res = await axios.get(url);
+      console.log(url, res.data.versions[0].num);
+      cargo.dependencies[dep.name] = dep.features.length
+        ? {
+            version: res.data.versions[0].num,
+            features: dep.features,
+          }
+        : res.data.versions[0].num;
     }
+    return cargo;
   }
 
   loadFunctionsToCargo() {

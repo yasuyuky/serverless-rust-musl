@@ -54,11 +54,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var child_process_1 = require("child_process");
 var fs = __importStar(require("fs"));
 var toml = __importStar(require("toml"));
 var process = __importStar(require("process"));
+var axios_1 = __importDefault(require("axios"));
 var RustMusl = /** @class */ (function () {
     function RustMusl(serverless, options) {
         this.target = "x86_64-unknown-linux-musl";
@@ -117,10 +121,11 @@ var RustMusl = /** @class */ (function () {
             var cargo, toml;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.addDependencies()];
-                    case 1:
-                        _a.sent();
+                    case 0:
                         cargo = this.loadFunctionsToCargo();
+                        return [4 /*yield*/, this.addDependencies(cargo)];
+                    case 1:
+                        cargo = _a.sent();
                         toml = this.createCargoToml(cargo);
                         fs.writeFileSync("Cargo.toml", toml);
                         return [2 /*return*/];
@@ -128,17 +133,35 @@ var RustMusl = /** @class */ (function () {
             });
         });
     };
-    RustMusl.prototype.addDependencies = function () {
+    RustMusl.prototype.addDependencies = function (cargo) {
         return __awaiter(this, void 0, void 0, function () {
-            var _i, _a, dep, args;
+            var _i, _a, dep, url, res;
             return __generator(this, function (_b) {
-                for (_i = 0, _a = this.defaultDependencies; _i < _a.length; _i++) {
-                    dep = _a[_i];
-                    console.log("Add cargo dependency:", dep);
-                    args = ["add", dep.name].concat(dep.features.length ? ["--features"].concat(dep.features) : []);
-                    child_process_1.spawnSync("cargo", args);
+                switch (_b.label) {
+                    case 0:
+                        _i = 0, _a = this.defaultDependencies;
+                        _b.label = 1;
+                    case 1:
+                        if (!(_i < _a.length)) return [3 /*break*/, 4];
+                        dep = _a[_i];
+                        console.log("Add cargo dependency:", dep);
+                        url = "https://crates.io/api/v1/crates/" + dep.name;
+                        return [4 /*yield*/, axios_1.default.get(url)];
+                    case 2:
+                        res = _b.sent();
+                        console.log(url, res.data.versions[0].num);
+                        cargo.dependencies[dep.name] = dep.features.length
+                            ? {
+                                version: res.data.versions[0].num,
+                                features: dep.features,
+                            }
+                            : res.data.versions[0].num;
+                        _b.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [2 /*return*/, cargo];
                 }
-                return [2 /*return*/];
             });
         });
     };

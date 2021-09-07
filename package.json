@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "adm-zip": "^0.5.5",
-    "axios": "^0.21.3",
+    "axios": "^0.21.4",
     "serverless": "^2.57.0",
     "toml": "^3.0.0"
   }

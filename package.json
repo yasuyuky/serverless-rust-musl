@@ -22,7 +22,7 @@
   "devDependencies": {
     "@types/adm-zip": "^0.5.3",
     "@types/axios": "^0.14.0",
-    "@types/node": "^20.8.7",
+    "@types/node": "^20.8.8",
     "@types/serverless": "^3.12.17",
     "typescript": "^5.2.2"
   },

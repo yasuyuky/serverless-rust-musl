@@ -20,7 +20,7 @@
     "lambda"
   ],
   "devDependencies": {
-    "@types/adm-zip": "^0.5.3",
+    "@types/adm-zip": "^0.5.4",
     "@types/axios": "^0.14.0",
     "@types/node": "^20.8.10",
     "@types/serverless": "^3.12.17",

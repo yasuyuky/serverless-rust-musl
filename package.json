@@ -27,7 +27,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "adm-zip": "^0.5.13",
+    "adm-zip": "^0.5.14",
     "axios": "^1.7.2",
     "serverless": "^4.0.35",
     "toml": "^3.0.0"

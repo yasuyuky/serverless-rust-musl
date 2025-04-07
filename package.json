@@ -24,7 +24,7 @@
     "@types/axios": "^0.14.4",
     "@types/node": "^22.14.0",
     "@types/serverless": "^3.12.27",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "adm-zip": "^0.5.16",
